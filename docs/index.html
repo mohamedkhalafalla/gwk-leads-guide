@@ -1,0 +1,642 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ليستة عملاء من Google Maps | Grow With Khalaf</title>
+<meta name="description" content="دليل بالعربي لتسطيب Google Maps Scraper كـ Skill على Claude Code، وإزاي تطلّع ليستة شركات B2B بالتليفونات والإيميلات، ورسالة التواصل اللي تحوّلها لعملاء.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ليستة عملاء B2B من Google Maps ببلاش">
+<meta property="og:description" content="التسطيب خطوة بخطوة + رسالة التواصل اللي تحوّل الليستة لعملاء.">
+<meta property="og:image" content="https://mohamedkhalafalla.github.io/gwk-leads-guide/assets/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#00273C">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #00273C;
+  --navy-2: #0A3550;
+  --cyan: #16ECED;
+  --ice: #D2FFFF;
+  --orange: #FF660F;
+  --peach: #FAD9C6;
+  --white: #FFFFFF;
+  --ink: #00273C;
+  --muted: #48606E;
+  --line: #DCE6EA;
+  --soft: #F4FAFB;
+  --radius: 16px;
+  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 84px; overflow-x: clip; }
+body {
+  margin: 0;
+  font-family: 'Cairo', system-ui, sans-serif;
+  color: var(--ink);
+  background: var(--white);
+  font-size: 18px;
+  line-height: 1.85;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+}
+a { color: inherit; }
+bdi, .en { unicode-bidi: isolate; }
+code { font-family: var(--mono); font-size: .85em; background: var(--ice); color: var(--navy); padding: 1px 7px; border-radius: 6px; direction: ltr; unicode-bidi: isolate; white-space: nowrap; }
+
+/* ---------- top bar ---------- */
+.topbar { position: sticky; top: 0; z-index: 20; background: rgba(0, 39, 60, .96); backdrop-filter: blur(8px); border-bottom: 1px solid rgba(22, 236, 237, .14); }
+.topbar .in { max-width: 1180px; margin: 0 auto; padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.brand { display: flex; align-items: center; gap: 10px; color: var(--white); text-decoration: none; font-weight: 900; direction: ltr; letter-spacing: .2px; }
+.brand .dot { width: 30px; height: 30px; border-radius: 9px; background: var(--cyan); color: var(--navy); display: grid; place-items: center; font-size: 15px; font-weight: 900; }
+.brand b { color: var(--cyan); }
+.btn { display: inline-flex; align-items: center; gap: 10px; border-radius: 999px; padding: 12px 26px; font-weight: 800; font-size: 17px; text-decoration: none; border: 0; cursor: pointer; font-family: inherit; transition: transform .15s ease, box-shadow .15s ease; white-space: nowrap; }
+.btn:hover { transform: translateY(-1px); }
+.btn-cyan { background: var(--cyan); color: var(--navy); box-shadow: 0 0 34px rgba(22, 236, 237, .35); }
+.btn-ghost { background: transparent; color: var(--white); border: 1.5px solid rgba(255, 255, 255, .35); }
+.btn-navy { background: var(--navy); color: var(--white); }
+.btn svg { width: 20px; height: 20px; flex: none; }
+.topbar .btn { padding: 9px 20px; font-size: 15px; }
+
+/* ---------- hero ---------- */
+.hero {
+  background:
+    radial-gradient(rgba(255, 255, 255, .07) 2px, transparent 2px) 0 0 / 44px 44px,
+    radial-gradient(circle at 8% 4%, rgba(22, 236, 237, .24) 0%, transparent 42%),
+    var(--navy);
+  color: var(--white);
+  overflow: hidden;
+}
+.hero .in { max-width: 1180px; margin: 0 auto; padding: 44px 20px 0; display: grid; grid-template-columns: 1.25fr .75fr; gap: 24px; align-items: end; }
+.crumbs { font-size: 15px; color: rgba(255, 255, 255, .6); margin-bottom: 18px; }
+.crumbs span { margin: 0 6px; }
+.eyebrow { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 800; color: var(--cyan); letter-spacing: .5px; border: 1px solid rgba(22, 236, 237, .4); border-radius: 999px; padding: 4px 14px; }
+.hero h1 { font-size: clamp(36px, 5.4vw, 62px); line-height: 1.3; font-weight: 900; margin: 18px 0 14px; }
+.hero h1 .hl { color: var(--orange); }
+.hero .lead { font-size: clamp(18px, 2vw, 22px); color: rgba(255, 255, 255, .82); margin: 0 0 26px; max-width: 640px; }
+.hero .ctas { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 26px; }
+.byline { display: flex; align-items: center; gap: 12px; padding-bottom: 44px; font-size: 15px; color: rgba(255, 255, 255, .7); }
+.byline .av { width: 44px; height: 44px; border-radius: 50%; background: var(--cyan); color: var(--navy); display: grid; place-items: center; font-weight: 900; font-size: 18px; }
+.byline strong { display: block; color: var(--white); font-size: 16px; }
+.facts { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-top: 4px; }
+.facts span::before { content: "✓"; color: var(--cyan); font-weight: 900; margin-left: 6px; }
+.hero-art { position: relative; align-self: end; display: flex; justify-content: center; min-height: 420px; }
+.hero-art img.me { width: min(420px, 100%); display: block; filter: drop-shadow(0 0 32px rgba(22, 236, 237, .35)); position: relative; z-index: 1; }
+.logos { position: absolute; top: 18px; inset-inline: 0; display: flex; justify-content: center; align-items: center; gap: 0; direction: ltr; z-index: 2; }
+.tile { width: 76px; height: 76px; border-radius: 20px; background: var(--white); display: grid; place-items: center; box-shadow: 0 10px 30px rgba(0, 0, 0, .25); }
+.tile img { width: 62%; height: 62%; }
+.link-line { width: 74px; height: 6px; background: repeating-linear-gradient(90deg, var(--cyan) 0 12px, transparent 12px 22px); border-radius: 4px; }
+
+/* ---------- layout ---------- */
+.wrap { max-width: 1180px; margin: 0 auto; padding: 48px 20px 30px; display: grid; grid-template-columns: minmax(0, 1fr) 250px; gap: 56px; }
+article { min-width: 0; max-width: 780px; }
+aside.toc { position: sticky; top: 90px; align-self: start; font-size: 15px; line-height: 1.6; }
+.toc h4 { font-size: 13px; letter-spacing: .6px; color: var(--muted); margin: 0 0 10px; font-weight: 800; }
+.toc ol { list-style: none; margin: 0; padding: 0; border-right: 2px solid var(--line); }
+.toc li a { display: block; padding: 6px 14px; text-decoration: none; color: var(--muted); border-right: 2px solid transparent; margin-right: -2px; }
+.toc li a:hover { color: var(--navy); }
+.toc li a.on { color: var(--navy); font-weight: 800; border-right-color: var(--orange); }
+.toc-mobile { display: none; }
+
+article h2 { font-size: clamp(26px, 3.2vw, 34px); line-height: 1.4; font-weight: 900; margin: 64px 0 14px; }
+article h2:first-of-type { margin-top: 8px; }
+article h2 .n { display: inline-grid; place-items: center; width: 40px; height: 40px; border-radius: 12px; background: var(--navy); color: var(--cyan); font-size: 20px; margin-left: 10px; vertical-align: 4px; }
+article h3 { font-size: 21px; font-weight: 800; margin: 34px 0 8px; }
+article p { margin: 0 0 16px; }
+article ul { padding-right: 22px; margin: 0 0 16px; }
+article li { margin-bottom: 6px; }
+.big { font-size: 20px; }
+.hl { color: var(--orange); }
+
+/* ---------- callouts ---------- */
+.callout { border-radius: var(--radius); padding: 20px 24px; margin: 24px 0; }
+.callout .label { font-size: 13px; font-weight: 900; letter-spacing: .6px; margin-bottom: 4px; display: block; }
+.callout p:last-child { margin-bottom: 0; }
+.callout.warn { background: var(--peach); }
+.callout.warn .label { color: #B8430A; }
+.callout.tip { background: var(--ice); }
+.callout.tip .label { color: var(--navy); }
+.callout.dark { background: var(--navy); color: var(--white); }
+.callout.dark .label { color: var(--cyan); }
+
+/* ---------- tables ---------- */
+.tbl { overflow-x: auto; margin: 18px 0 26px; border: 1px solid var(--line); border-radius: var(--radius); }
+table { width: 100%; border-collapse: collapse; font-size: 16px; line-height: 1.7; }
+th { background: var(--navy); color: var(--white); text-align: right; font-weight: 800; font-size: 13px; letter-spacing: .5px; padding: 12px 16px; white-space: nowrap; }
+td { padding: 14px 16px; border-top: 1px solid var(--line); vertical-align: top; }
+tr:nth-child(even) td { background: var(--soft); }
+.agent { display: inline-block; direction: ltr; unicode-bidi: isolate; font-weight: 800; background: var(--ice); color: var(--navy); padding: 2px 10px; border-radius: 8px; white-space: nowrap; font-size: 15px; }
+.gloss { display: block; font-size: 13px; color: var(--muted); margin-top: 4px; }
+.pts { font-weight: 900; color: var(--orange); font-size: 20px; text-align: center; }
+.num { font-weight: 900; color: var(--orange); }
+.group-title { display: flex; align-items: center; gap: 10px; font-size: 19px; font-weight: 800; margin: 28px 0 0; }
+.group-title::before { content: ""; width: 10px; height: 10px; border-radius: 3px; background: var(--cyan); box-shadow: 0 0 0 4px var(--ice); }
+
+/* ---------- prompt + code ---------- */
+.prompt { border: 1.5px solid var(--navy); border-radius: var(--radius); margin: 18px 0 26px; overflow: hidden; }
+.prompt-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; background: var(--navy); color: var(--white); padding: 10px 14px 10px 10px; }
+.prompt-head .t { font-weight: 800; font-size: 15px; }
+.prompt-head .t small { color: var(--cyan); font-size: 12px; letter-spacing: .6px; margin-left: 8px; }
+.copy { font-family: inherit; font-weight: 800; font-size: 14px; background: var(--cyan); color: var(--navy); border: 0; border-radius: 999px; padding: 6px 16px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
+.copy.done { background: var(--white); }
+.prompt pre { margin: 0; padding: 18px 20px; white-space: pre-wrap; word-break: break-word; font-family: 'Cairo', sans-serif; font-size: 16px; line-height: 1.9; background: var(--soft); unicode-bidi: plaintext; }
+.prompt pre .ph { background: var(--peach); border-radius: 5px; padding: 0 4px; font-weight: 700; }
+.code { background: #001B2A; border-radius: var(--radius); margin: 14px 0 22px; overflow: hidden; }
+.code .prompt-head { background: #00121C; }
+.code pre { margin: 0; padding: 16px 20px; color: var(--ice); font-family: var(--mono); font-size: 15px; line-height: 1.8; direction: ltr; text-align: left; overflow-x: auto; white-space: pre; }
+.code pre .c { color: #6E8C99; }
+
+/* ---------- install tabs ---------- */
+.tabs { display: flex; gap: 6px; background: var(--soft); border: 1px solid var(--line); padding: 6px; border-radius: 999px; width: fit-content; max-width: 100%; margin: 18px 0 8px; }
+.tabs button { font-family: inherit; font-size: 16px; font-weight: 800; border: 0; background: transparent; color: var(--muted); padding: 8px 20px; border-radius: 999px; cursor: pointer; white-space: nowrap; }
+.tabs button[aria-selected="true"] { background: var(--navy); color: var(--white); }
+.panel[hidden] { display: none; }
+.steps { counter-reset: s; list-style: none; padding: 0 !important; margin: 18px 0 !important; }
+.steps > li { counter-increment: s; position: relative; padding: 2px 52px 14px 0; margin: 0 !important; }
+.steps > li::before { content: counter(s); position: absolute; right: 0; top: 0; width: 36px; height: 36px; border-radius: 50%; background: var(--ice); color: var(--navy); font-weight: 900; display: grid; place-items: center; font-size: 17px; }
+.steps > li:not(:last-child)::after { content: ""; position: absolute; right: 17px; top: 40px; bottom: 4px; width: 2px; background: var(--line); }
+.download { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 20px; background: var(--navy); color: var(--white); border-radius: var(--radius); padding: 20px 24px; margin: 20px 0; }
+.download .meta { font-size: 15px; color: rgba(255, 255, 255, .72); line-height: 1.6; }
+.download .meta strong { color: var(--white); font-size: 17px; display: block; direction: ltr; text-align: right; }
+
+/* ---------- agents cards ---------- */
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; margin: 18px 0; }
+.card { border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; background: var(--white); }
+.card .agent { margin-bottom: 6px; }
+a.card { display: block; text-decoration: none; color: inherit; transition: border-color .15s ease; }
+a.card:hover { border-color: var(--navy); }
+.card p { margin: 0; font-size: 15.5px; line-height: 1.75; color: #1D3B4B; }
+
+/* ---------- footer ---------- */
+.end {
+  background:
+    radial-gradient(rgba(255, 255, 255, .07) 2px, transparent 2px) 0 0 / 44px 44px,
+    radial-gradient(circle at 92% 0%, rgba(22, 236, 237, .22) 0%, transparent 40%),
+    var(--navy);
+  color: var(--white); margin-top: 40px;
+}
+.end .in { max-width: 1180px; margin: 0 auto; padding: 56px 20px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 24px; }
+.end h3 { font-size: clamp(26px, 3vw, 34px); font-weight: 900; margin: 0 0 6px; line-height: 1.4; }
+.end p { margin: 0; color: rgba(255, 255, 255, .75); }
+.end .row { display: flex; flex-wrap: wrap; gap: 12px; }
+.foot { text-align: center; font-size: 14px; color: rgba(255, 255, 255, .55); padding: 18px 20px 26px; border-top: 1px solid rgba(255, 255, 255, .08); direction: ltr; }
+
+/* ---------- responsive ---------- */
+@media (max-width: 960px) {
+  .wrap { grid-template-columns: 1fr; gap: 0; padding-top: 28px; }
+  aside.toc { display: none; }
+  .toc-mobile { display: block; border: 1px solid var(--line); border-radius: var(--radius); padding: 4px 18px; margin-bottom: 26px; background: var(--soft); }
+  .toc-mobile summary { cursor: pointer; font-weight: 800; padding: 10px 0; }
+  .toc-mobile ol { margin: 0 0 12px; padding-right: 22px; font-size: 16px; line-height: 1.9; }
+  .toc-mobile a { text-decoration: none; color: var(--navy); }
+  .hero .in { grid-template-columns: 1fr; padding-top: 28px; }
+  .hero-art { min-height: 0; order: -1; display: none; }
+  .byline { padding-bottom: 36px; }
+}
+/* On phones every table row becomes a card, so nothing scrolls sideways. */
+@media (max-width: 640px) {
+  .tbl { border: 0; border-radius: 0; overflow: visible; }
+  .tbl table, .tbl tbody, .tbl tr, .tbl td { display: block; width: 100%; }
+  .tbl thead { display: none; }
+  .tbl tr { border: 1px solid var(--line); border-radius: 14px; padding: 12px 16px; margin-bottom: 10px; background: var(--white) !important; }
+  .tbl tr td { background: none !important; border: 0; padding: 3px 0; }
+  .tbl td:first-child { font-weight: 700; }
+  .tbl td[data-l]:not(:first-child):not(:nth-child(2))::before { content: attr(data-l) ": "; color: var(--muted); font-size: 13px; font-weight: 800; }
+  .tbl td.pts { display: inline-block; width: auto; font-size: 17px; text-align: right; }
+  .tbl td.pts::after { content: " نقطة"; font-size: 13px; color: var(--muted); }
+  .tbl tr:has(td.pts) td:first-child { display: inline-block; width: auto; margin-left: 10px; }
+  .gloss { display: inline; margin: 0 8px 0 0; }
+}
+@media (max-width: 560px) {
+  body { font-size: 17px; }
+  .topbar .btn { display: none; }
+  .hero .ctas .btn { width: 100%; justify-content: center; }
+  .callout { padding: 16px 18px; }
+  td, th { padding: 11px 12px; }
+  table { font-size: 15px; }
+  .tabs { width: 100%; }
+  .tabs button { flex: 1; padding: 8px 10px; font-size: 15px; }
+  .steps > li { padding-right: 46px; }
+}
+
+
+/* ---------- this page ---------- */
+.hero-art { align-self: center; min-height: 0; padding-bottom: 44px; flex-direction: column; align-items: center; gap: 26px; }
+.hero-art .logos { position: static; }
+.hero-art .tile { width: 104px; height: 104px; border-radius: 26px; }
+.sig { display: flex; flex-direction: column; gap: 10px; align-items: stretch; }
+.sig span { display: flex; align-items: center; gap: 10px; background: rgba(255, 255, 255, .08); border: 1px solid rgba(255, 255, 255, .16); border-radius: 999px; padding: 8px 20px; font-weight: 800; }
+.sig span i { width: 12px; height: 12px; border-radius: 6px; background: var(--cyan); flex: none; }
+.sig span.on { background: var(--orange); border-color: var(--orange); }
+.sig span.on i { background: var(--white); }
+.code pre { unicode-bidi: plaintext; }
+.email { border: 1.5px solid var(--line); border-radius: var(--radius); margin: 18px 0 26px; overflow: hidden; background: var(--white); }
+.email.good { border-color: var(--navy); }
+.email.bad { border-color: var(--orange); }
+.email .head { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 16px; background: var(--soft); border-bottom: 1px solid var(--line); font-size: 14px; font-weight: 800; }
+.email.good .head { background: var(--navy); color: var(--white); border-color: var(--navy); }
+.email.bad .head { background: var(--peach); border-color: var(--orange); }
+.email .body { padding: 16px 20px; line-height: 1.95; }
+.email .body p { margin: 0 0 10px; }
+.email .body p:last-child { margin: 0; }
+.email .body .s { font-weight: 900; font-size: 19px; }
+.tag { display: inline-block; font-size: 12px; font-weight: 900; border-radius: 6px; padding: 0 8px; margin-inline-start: 6px; vertical-align: 2px; background: var(--ice); color: var(--navy); }
+.email.bad .tag { background: var(--white); color: #B8430A; }
+.pair { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 18px 0 24px; }
+.pair > div { border-radius: 14px; padding: 14px 18px; border: 1.5px solid var(--line); }
+.pair .no { border-color: var(--orange); background: #FFF6F0; }
+.pair .yes { border-color: var(--navy); background: var(--ice); }
+.pair b { display: block; font-size: 13px; letter-spacing: .4px; margin-bottom: 4px; }
+.pair .no b { color: #B8430A; }
+.pair p { margin: 0; font-size: 16.5px; line-height: 1.8; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 22px; padding: 0; list-style: none; }
+.chips li { margin: 0 !important; background: var(--soft); border: 1px solid var(--line); border-radius: 999px; padding: 4px 16px; font-weight: 800; font-size: 16px; }
+.chips li.on { background: var(--navy); color: var(--white); border-color: var(--navy); }
+.lead-tile { display: inline-grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--white); border: 1px solid var(--line); vertical-align: -10px; margin-inline-end: 6px; }
+.lead-tile img { width: 22px; height: 22px; }
+@media (max-width: 640px) { .pair { grid-template-columns: 1fr; } }
+.email .ph, .steps .ph { background: var(--peach); border-radius: 5px; padding: 0 4px; font-weight: 700; }
+/* ---------- leads page ---------- */
+.hero-art { align-self: center; min-height: 0; padding-bottom: 44px; flex-direction: column; align-items: center; gap: 22px; }
+.hero-art .logos { position: static; }
+.hero-art .tile { width: 96px; height: 96px; border-radius: 24px; }
+.mini { width: min(400px, 100%); background: var(--white); color: var(--navy); border-radius: 20px; overflow: hidden; box-shadow: 0 0 0 6px rgba(22, 236, 237, .18), 0 30px 60px rgba(0, 0, 0, .35); font-size: 14.5px; line-height: 1.5; }
+.mini .q { display: flex; align-items: center; gap: 8px; padding: 12px 16px; border-bottom: 1px solid var(--line); font-weight: 800; }
+.mini .q i { width: 10px; height: 10px; border-radius: 50%; background: #EA4335; flex: none; }
+.mini .r { display: grid; grid-template-columns: 1.5fr 1fr .9fr; gap: 8px; padding: 9px 16px; border-bottom: 1px solid var(--line); align-items: center; }
+.mini .r:last-child { border-bottom: 0; }
+.mini .r.h { background: var(--navy); color: var(--white); font-size: 12px; font-weight: 800; letter-spacing: .4px; }
+.mini .r span:nth-child(2) { direction: ltr; text-align: right; font-family: var(--mono); font-size: 12.5px; }
+.mini .ok { color: #0B7A55; font-weight: 900; }
+.mini .no { color: var(--muted); }
+.mini .foot { padding: 8px 16px; font-size: 12px; color: var(--muted); background: var(--soft); }
+article h2 .n.o { background: var(--orange); color: var(--white); }
+.lead-tile.big2 { width: 40px; height: 40px; }
+@media (max-width: 640px) { .pair { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="in">
+    <a class="brand" href="#top"><span class="dot">G</span><span>Grow With <b>Khalaf</b></span></a>
+    <a class="btn btn-cyan" href="#outreach">رسالة التواصل</a>
+  </div>
+</header>
+
+<section class="hero" id="top">
+  <div class="in">
+    <div>
+      <div class="crumbs">موارد<span>/</span>Leads<span>/</span>Google Maps</div>
+      <span class="eyebrow">دليل التسطيب + رسالة التواصل</span>
+      <h1>ليستة عملاء B2B من <span class="hl nw">Google Maps</span> ببلاش</h1>
+      <p class="lead">Google Maps Scraper أداة open source بتلف على نتايج أي بحث في Google Maps، وتحفظ كل شركة في شيت: الاسم والتليفون والموقع والتقييم، والإيميل لو ليها موقع. وبتسطّبها كـ&nbsp;Skill على Claude Code وتطلب منها بالعربي.</p>
+      <div class="ctas">
+        <a class="btn btn-cyan" href="#install">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+          ابدأ من الخطوة 1
+        </a>
+        <a class="btn btn-ghost" href="https://github.com/gosom/google-maps-scraper" target="_blank" rel="noopener">الـ&nbsp;repo على GitHub</a>
+      </div>
+      <div class="byline">
+        <div class="av">K</div>
+        <div>
+          <strong>الشرح من Grow With Khalaf · الأداة من gosom</strong>
+          <div class="facts"><span>MIT · open source</span><span>بتشتغل على جهازك</span><span>36 معلومة عن كل شركة</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="hero-art" aria-hidden="true">
+      <div class="logos">
+        <div class="tile"><img src="assets/googlemaps.svg" alt=""></div>
+        <div class="link-line"></div>
+        <div class="tile"><img src="assets/claude.svg" alt=""></div>
+      </div>
+      <div class="mini">
+        <div class="q"><i></i>مصانع بلاستيك في العاشر من رمضان</div>
+        <div class="r h"><span>الشركة</span><span>تليفون</span><span>إيميل</span></div>
+        <div class="r"><span>مصنع النور للبلاستيك</span><span>010•••4521</span><span class="ok">✓</span></div>
+        <div class="r"><span>الدلتا للعبوات</span><span>015•••7730</span><span class="ok">✓</span></div>
+        <div class="r"><span>مصنع الفجر للخراطيم</span><span>012•••1094</span><span class="no">—</span></div>
+        <div class="foot">أسماء للتوضيح بس</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="wrap">
+  <article>
+
+    <details class="toc-mobile">
+      <summary>في الصفحة دي</summary>
+      <ol data-toc></ol>
+    </details>
+
+    <p class="big">بدل ما تشتري ليستة قديمة أو تنسخ أرقام من Google Maps بإيدك، تكتب البحث اللي عايزه، زي «مصانع بلاستيك في العاشر من رمضان»، والأداة تجيبلك كل نتيجة في شيت. الدليل ده فيه التسطيب خطوة بخطوة، وإزاي تنضّف الليستة، و<b>رسالة التواصل</b> اللي تحوّلها لمكالمات.</p>
+
+    <div class="callout dark">
+      <span class="label">الأداة بتعمل إيه بالظبط</span>
+      <p>انت بتطلب من Claude Code بالكلام العادي، وهو يجهّز البحث، ويعمل تجربة صغيرة الأول، وبعدين يشغّل البحث كله على جهازك جوه Docker ويتابعه، وفي الآخر يوريك أول النتايج ويحفظ الشيت. الأداة ببلاش ومفيش API key ولا اشتراك غير Claude نفسه.</p>
+    </div>
+
+    <!-- ===== before ===== -->
+    <h2 id="before">قبل ما تبدأ</h2>
+    <div class="tbl"><table>
+      <thead><tr><th>محتاج إيه</th><th>ليه</th></tr></thead>
+      <tbody>
+        <tr><td><b>Claude Code</b> واشتراك Claude Pro أو Max</td><td>هو اللي بيشغّل الأداة وانت بتكلّمه بالعربي. ولو مش عايز Claude، فيه طريقة بـ&nbsp;Docker بس في الخطوة 1.</td></tr>
+        <tr><td><b>Docker Desktop</b></td><td>البحث نفسه بيشتغل جوه Docker على جهازك. نزّله من <a href="https://www.docker.com/products/docker-desktop/" target="_blank" rel="noopener">docker.com</a> وافتحه قبل ما تبدأ.</td></tr>
+        <tr><td><b>Node.js</b></td><td>عشان أمر تسطيب الـ&nbsp;Skill (<code>npx</code>). نزّل نسخة الـ&nbsp;LTS من <a href="https://nodejs.org" target="_blank" rel="noopener">nodejs.org</a>.</td></tr>
+        <tr><td><b>ماك أو لينكس</b>، أو ويندوز بـ&nbsp;WSL</td><td>على ويندوز لازم WSL، دي الأنظمة اللي الـ&nbsp;Skill بيدعمها.</td></tr>
+      </tbody>
+    </table></div>
+
+    <!-- ===== step 1 ===== -->
+    <h2 id="install"><span class="n">1</span>سطّب الأداة</h2>
+    <div class="tabs" role="tablist">
+      <button role="tab" aria-selected="true" aria-controls="p-claude" id="t-claude">كـ&nbsp;Skill على Claude Code</button>
+      <button role="tab" aria-selected="false" aria-controls="p-docker" id="t-docker">بـ&nbsp;Docker بس</button>
+    </div>
+
+    <div class="panel" id="p-claude" role="tabpanel" aria-labelledby="t-claude">
+      <ol class="steps">
+        <li>افتح <b>Docker Desktop</b> واستنى لحد ما يبقى شغال.</li>
+        <li>افتح الـ&nbsp;Terminal والصق الأمر ده:
+          <div class="code">
+            <div class="prompt-head"><span class="t"><small>TERMINAL</small>تسطيب الـ&nbsp;Skill</span><button class="copy">انسخ</button></div>
+            <pre>npx skills add gosom/google-maps-scraper</pre>
+          </div>
+          لو سألك تسطّبه على أنهي agent، اختار <b>Claude Code</b>.</li>
+        <li>اعمل فولدر للّيستات وافتح Claude Code جواه:
+          <div class="code">
+            <div class="prompt-head"><span class="t"><small>TERMINAL</small>افتح Claude Code</span><button class="copy">انسخ</button></div>
+            <pre>mkdir -p ~/Desktop/leads
+cd ~/Desktop/leads
+claude</pre>
+          </div>
+        </li>
+      </ol>
+      <p>كده خلصت. في أول مرة Claude بيتأكد إن الـ&nbsp;Skill آخر نسخة، وبينزّل الأداة جوه Docker، فأول بحث بياخد وقت أطول شوية.</p>
+    </div>
+
+    <div class="panel" id="p-docker" role="tabpanel" aria-labelledby="t-docker" hidden>
+      <p>لو مش عايز تستخدم Claude، اكتب البحث في ملف وشغّل الأداة بـ&nbsp;Docker على طول. كل سطر في <code>queries.txt</code> بحث لوحده.</p>
+      <div class="code">
+        <div class="prompt-head"><span class="t"><small>TERMINAL</small>جهّز البحث</span><button class="copy">انسخ</button></div>
+        <pre>mkdir -p ~/Desktop/leads/out
+cd ~/Desktop/leads
+printf "plastic factories in 10th of Ramadan City, Egypt\nمصانع بلاستيك العاشر من رمضان\n" &gt; queries.txt</pre>
+      </div>
+      <div class="code">
+        <div class="prompt-head"><span class="t"><small>TERMINAL</small>شغّل البحث</span><button class="copy">انسخ</button></div>
+        <pre>docker run \
+  -v gmaps-playwright-cache:/opt \
+  -v "$PWD/queries.txt:/queries.txt:ro" \
+  -v "$PWD/out:/out" \
+  gosom/google-maps-scraper \
+  -input /queries.txt \
+  -results /out/results.csv \
+  -depth 1 \
+  -email \
+  -exit-on-inactivity 3m</pre>
+      </div>
+      <p>النتيجة هتلاقيها في <code>out/results.csv</code>. الـ&nbsp;<code>-email</code> هو اللي بيجيب الإيميلات من مواقع الشركات، وبيخلّي البحث أبطأ. والأداة بتقفل لوحدها بعد 3 دقايق من غير نتايج جديدة.</p>
+    </div>
+
+    <!-- ===== step 2 ===== -->
+    <h2 id="ask"><span class="n">2</span>اطلب الليستة بالعربي</h2>
+    <p>جوه Claude Code الصق البرومبت ده، وغيّر اللي بين الأقواس:</p>
+    <div class="prompt" id="prompt">
+      <div class="prompt-head"><span class="t"><small>PROMPT</small>هات الليستة</span><button class="copy">انسخ</button></div>
+      <pre>طلّعلي ليستة بـ<span class="ph">[مصانع بلاستيك]</span> في <span class="ph">[العاشر من رمضان، مصر]</span>.
+- ابحث بالعربي وبالإنجليزي.
+- <span class="ph">[لو المدينة كبيرة زي القاهرة: قسّم البحث على الأحياء، مثلًا مدينة نصر والتجمع والمعادي]</span>
+- هات الإيميلات من مواقع الشركات (شغّل استخراج الإيميل).
+- ابدأ بتجربة صغيرة، وبعدها شغّل البحث كله.
+- مش محتاج proxy دلوقتي.
+- احفظ النتيجة CSV في الفولدر ده.</pre>
+    </div>
+    <div class="callout warn">
+      <span class="label">الإيميلات مش بتيجي لوحدها</span>
+      <p>استخراج الإيميل <b>مقفول</b> في الأداة لحد ما تطلبه، عشان بيلف على موقع كل شركة وبياخد وقت. فلازم تكتبه في الطلب زي البرومبت اللي فوق.</p>
+    </div>
+    <h3>هيسألك على الـ&nbsp;proxy</h3>
+    <p>الـ&nbsp;proxy بيقلّل احتمال إن Google يوقف البحث لما يكون كبير. هيديك 3 اختيارات: proxy عندك، أو يقترحلك شركات، أو تكمّل من غيره. لأول بحث وليستة مدينة واحدة <b>كمّل من غيره</b>. والشركات اللي بيقترحها رعاة للأداة واللينكات referral، فمش لازم تختار منهم.</p>
+    <div class="callout tip">
+      <span class="label">البحث نفسه</span>
+      <p>اكتب نوع الشركة + المكان بالظبط: «شركات شحن في بورسعيد» أحسن من «شركات شحن». ولو بتدوّر في مصر جرّب الاسمين، «مصانع بلاستيك» و«plastic factories»، لأن الشركات متسجلة على الخريطة باللغتين.</p>
+    </div>
+
+    <!-- ===== step 3 ===== -->
+    <h2 id="clean"><span class="n">3</span>نضّف الليستة وقسّمها</h2>
+    <p>كل شركة بتيجي بـ&nbsp;36 معلومة. دي اللي هتحتاجها للبيع B2B:</p>
+    <div class="tbl"><table>
+      <thead><tr><th>العمود</th><th>فيه إيه</th><th>هتستخدمه في</th></tr></thead>
+      <tbody>
+        <tr><td><span class="agent">title</span> <span class="agent">category</span></td><td>اسم الشركة ونشاطها على الخريطة</td><td>تشيل اللي مش في مجالك</td></tr>
+        <tr><td><span class="agent">phone</span></td><td>رقم الشركة اللي على Google Maps</td><td>المكالمة أو الواتساب</td></tr>
+        <tr><td><span class="agent">website</span> <span class="agent">emails</span></td><td>الموقع، والإيميلات اللي لقاها عليه</td><td>الإيميل الأول</td></tr>
+        <tr><td><span class="agent">review_rating</span> <span class="agent">review_count</span></td><td>التقييم وعدد الريفيوهات</td><td>تعرف الشركات الأكبر والأنشط</td></tr>
+        <tr><td><span class="agent">status</span></td><td>شغالة ولا مقفولة</td><td>تشيل المقفول</td></tr>
+        <tr><td><span class="agent">complete_address</span></td><td>العنوان كامل</td><td>تقسّم بالمنطقة أو تزورهم</td></tr>
+        <tr><td><span class="agent">descriptions</span> <span class="agent">user_reviews</span></td><td>وصف الشركة وكلام العملا عنها</td><td>أول سطر في رسالتك</td></tr>
+      </tbody>
+    </table></div>
+    <p>واطلب من Claude يقسّمها:</p>
+    <div class="prompt">
+      <div class="prompt-head"><span class="t"><small>PROMPT</small>قسّم الليستة</span><button class="copy">انسخ</button></div>
+      <pre>افتح ملف النتايج وقسّمه لـ 3 شيتات:
+1. «جاهزين»: عندهم تليفون وإيميل وموقع، والشركة شغالة.
+2. «تليفون بس»: عندهم تليفون ومالهمش إيميل.
+3. «مستبعدين»: مقفولة، أو مكررة، أو مش في مجالنا (زي <span class="ph">[محلات التجزئة]</span>).
+رتّب كل شيت بعدد الريفيوهات من الأكبر للأصغر، وقولّي كام شركة في كل واحد.</pre>
+    </div>
+
+    <!-- ===== step 4 ===== -->
+    <h2 id="outreach"><span class="n o">4</span>رسالة التواصل</h2>
+    <p class="big">الليستة لوحدها مش عملا. وأهم حاجة تعرفها: الرقم اللي على Google Maps غالبًا رقم <b>الشركة</b>، يعني الاستقبال أو السكرتارية، مش صاحب القرار. والإيميل غالبًا <code>info@</code>.</p>
+    <p>فأول رسالة مش هدفها تبيع. هدفها توصل <b>للشخص الصح</b>، باسمه.</p>
+    <div class="pair">
+      <div class="no"><b>متعملش كده</b><p>تبعت العرض كله على رقم الشركة، والسكرتيرة تقرا 6 سطور عن خدماتك وتمسحهم.</p></div>
+      <div class="yes"><b>اعمل كده</b><p>سطر عنهم، وسطر عن اللي بتعمله، وسؤال واحد: «مين المسؤول عن ده عندكم؟».</p></div>
+    </div>
+
+    <h3>رسالة الواتساب</h3>
+    <div class="email good">
+      <div class="head"><span>لرقم الشركة اللي على الخريطة</span><button class="copy">انسخ</button></div>
+      <div class="body">
+        <p>صباح الخير، أنا <span class="ph">[اسمك]</span> من <span class="ph">[شركتك]</span>.</p>
+        <p><span class="ph">[أول سطر عنهم: مثلًا «شفت إن مصنعكم بيعمل عبوات للأغذية في العاشر»]</span> <span class="tag">عنهم</span></p>
+        <p>إحنا بنساعد <span class="ph">[مصانع زيكم]</span> في <span class="ph">[النتيجة: مثلًا يزوّدوا طلبات عروض الأسعار]</span>. <span class="tag">بتعمل إيه</span></p>
+        <p>مين المسؤول عن <span class="ph">[المبيعات / المشتريات]</span> عندكم، عشان أبعتله التفاصيل؟ <span class="tag">سؤال واحد</span></p>
+      </div>
+    </div>
+
+    <h3>لو هتتصل</h3>
+    <ol class="steps">
+      <li>«صباح الخير، أنا <span class="ph">[اسمك]</span> من <span class="ph">[شركتك]</span>. ممكن أعرف مين المسؤول عن <span class="ph">[المشتريات]</span>؟»</li>
+      <li>لو سألوك عن إيه: «عندنا <span class="ph">[الخدمة]</span> بتساعد <span class="ph">[مصانع زيكم]</span> في <span class="ph">[النتيجة]</span>، وعايز أبعتله التفاصيل.»</li>
+      <li>«اسمه إيه، وأبعتله على أنهي إيميل؟» وبعدها تبعت الإيميل باسمه.</li>
+    </ol>
+
+    <h3>الإيميل</h3>
+    <div class="email good">
+      <div class="head"><span>للمسؤول باسمه، أو للإيميل العام</span><button class="copy">انسخ</button></div>
+      <div class="body">
+        <p class="s"><span class="ph">[اسم شركتهم]</span> و<span class="ph">[النتيجة في كلمتين]</span> <span class="tag">subject</span></p>
+        <p>أهلًا أ. <span class="ph">[الاسم]</span>،</p>
+        <p><span class="ph">[أول سطر عنهم]</span> <span class="tag">عنهم</span></p>
+        <p>بنساعد <span class="ph">[مصانع زيكم]</span> في <span class="ph">[النتيجة]</span>، زي <span class="ph">[عميل شبهكم]</span> اللي <span class="ph">[النتيجة برقم حقيقي ومدة]</span>. <span class="tag">دليل</span></p>
+        <p>ينفع أشرحلك في مكالمة 15 دقيقة الأسبوع ده؟ ولو حضرتك مش الشخص المناسب، ممكن تحوّله للمسؤول عن <span class="ph">[المبيعات]</span>؟ <span class="tag">طلب صغير</span></p>
+        <p><span class="ph">[اسمك]</span> · <span class="ph">[شركتك]</span> · <span class="ph">[رقمك]</span></p>
+      </div>
+    </div>
+
+    <h3><span class="lead-tile"><img src="assets/claude.svg" alt=""></span>خلّي Claude يكتب أول سطر لكل شركة</h3>
+    <p>أول سطر هو اللي بيفرّق رسالتك عن أي spam. والبيانات اللي جبتها فيها اللي محتاجه: نشاط الشركة، ووصفها، وكلام عملائها. الصق ده في نفس جلسة Claude Code:</p>
+    <div class="prompt">
+      <div class="prompt-head"><span class="t"><small>PROMPT</small>رسالة لكل شركة</span><button class="copy">انسخ</button></div>
+      <pre>أنا <span class="ph">[اسمك]</span> من <span class="ph">[شركتك]</span>. بنساعد <span class="ph">[نوع الشركات]</span> في <span class="ph">[النتيجة]</span>.
+مثال حقيقي عندنا: <span class="ph">[عميل شبههم + النتيجة برقم]</span> (لو مفيش، اكتب: مفيش).
+
+افتح شيت «جاهزين»، ولكل شركة:
+1. اقرا الـ category والـ descriptions والريفيوهات والموقع بتاعها.
+2. اكتب أول سطر واحد عنها هي، من حاجة حقيقية لقيتها في البيانات دي. متألفش أي معلومة، ولو مفيش حاجة واضحة اكتب سطر عن نشاطها ومكانها بس.
+3. حط السطر ده في رسالة الواتساب والإيميل اللي تحت، مكان [أول سطر عنهم].
+4. خلّي الرسالة بالعربي المصري، بسيطة، ومن غير مبالغة.
+
+ضيف 3 أعمدة للشيت: first_line وwhatsapp وemail، واحفظه.
+
+رسالة الواتساب:
+<span class="ph">[الصق رسالة الواتساب اللي فوق بعد ما تملا اسمك وشركتك]</span>
+
+الإيميل:
+<span class="ph">[الصق الإيميل اللي فوق]</span></pre>
+    </div>
+
+    <h3>المتابعة</h3>
+    <div class="tbl"><table>
+      <thead><tr><th>اليوم</th><th>بتعمل إيه</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>واتساب أو مكالمة لرقم الشركة. الهدف: اسم المسؤول وإيميله.</td></tr>
+        <tr><td>2</td><td>الإيميل للمسؤول باسمه. ولو ماعرفتش الاسم، ابعته للإيميل العام.</td></tr>
+        <tr><td>5</td><td>Follow-up فيه حاجة جديدة: نتيجة لعميل شبههم، أو ملاحظة على موقعهم. <a href="https://mohamedkhalafalla.github.io/gwk-cold-email-angles/">الزوايا بالأمثلة هنا</a>.</td></tr>
+        <tr><td>10</td><td>آخر رسالة: «أقفل الموضوع ده ولا نتكلم الشهر الجاي؟»</td></tr>
+      </tbody>
+    </table></div>
+    <div class="callout warn">
+      <span class="label">الواتساب</span>
+      <p>ابعت بإيدك ومن رقم WhatsApp Business، وعدد قليل في اليوم. الرسايل الكتير لأرقام مش مسجّلاك ممكن تخلّي واتساب يقفل رقمك. ولو هتبعت إيميلات بالكمية، جهّز الدومين الأول من <a href="https://mohamedkhalafalla.github.io/gwk-cold-email-setup/">دليل الـ&nbsp;setup</a>.</p>
+    </div>
+
+    <!-- ===== know ===== -->
+    <h2 id="know">حاجات لازم تعرفها</h2>
+    <ul>
+      <li><b>الإيميلات بتيجي من مواقع الشركات بس.</b> الشركة اللي مالهاش موقع على Google Maps مش هيطلعلها إيميل، والإيميل اللي بيطلع غالبًا العام بتاع الشركة.</li>
+      <li><b>مفيش بحث بيجيب كل الشركات.</b> Google Maps بيرتّب النتايج ومش بيعرضها كلها. عشان تغطي مدينة كبيرة، قسّم البحث على الأحياء، أو اطلب من Claude بحث بالـ&nbsp;grid على المنطقة كلها.</li>
+      <li><b>السرعة.</b> الـ&nbsp;README بيقول حوالي 120 مكان في الدقيقة على إعدادات معينة. ولما تشغّل الإيميلات بيبقى أبطأ بكتير، فابدأ بليستة صغيرة.</li>
+      <li><b>استخدمه بمسؤولية.</b> مطوّر الأداة نفسه بيقول إن الـ&nbsp;scraping ممكن يخالف شروط خدمة الموقع، وإن كل واحد مسؤول يلتزم بالقوانين. متبيعش الداتا، ومتبعتش رسايل جماعية، وأي حد يقولك «شيلني» شيله من الليستة.</li>
+      <li><b>إحصائيات الاستخدام.</b> الأداة بتبعت إحصائيات مجهولة لمطوّرها. لو عايز تقفلها، اطلب من Claude يضيف <code>DISABLE_TELEMETRY=1</code>، أو حط <code>-e DISABLE_TELEMETRY=1</code> بعد <code>docker run</code>.</li>
+    </ul>
+
+    <!-- ===== troubleshooting ===== -->
+    <h2 id="faq">لو حاجة مش شغالة</h2>
+    <div class="tbl"><table>
+      <thead><tr><th>المشكلة</th><th>الحل</th></tr></thead>
+      <tbody>
+        <tr><td><code>npx: command not found</code></td><td>سطّب Node.js من nodejs.org، واقفل الـ&nbsp;Terminal وافتحه تاني.</td></tr>
+        <tr><td><code>Cannot connect to the Docker daemon</code></td><td>Docker Desktop مقفول. افتحه واستنى لحد ما يبقى شغال، وجرّب تاني.</td></tr>
+        <tr><td>أول بحث بطيء جدًا</td><td>طبيعي. أول مرة بينزّل الأداة نفسها جوه Docker، والمرات اللي بعدها أسرع.</td></tr>
+        <tr><td>مفيش إيميلات خالص</td><td>اتأكد إنك طلبت استخراج الإيميل. ولو طلبته، يبقى الشركات دي مالهاش موقع، أو مش حاطة إيميل عليه.</td></tr>
+        <tr><td>النتايج قليلة</td><td>حدّد المكان أكتر، وجرّب البحث بالإنجليزي، أو اطلب تقسيم البحث على الأحياء.</td></tr>
+        <tr><td>البحث وقف في النص</td><td>اطلب من Claude يقلّل عدد البحوث اللي شغالة مع بعض، أو جرّب proxy. والنتايج اللي اتجمعت قبل ما يقف بتفضل محفوظة.</td></tr>
+        <tr><td>أنا على ويندوز</td><td>سطّب WSL الأول، وشغّل الأوامر جواه.</td></tr>
+      </tbody>
+    </table></div>
+
+    <div class="callout dark">
+      <span class="label">المصادر</span>
+      <p>كل الخطوات من الـ&nbsp;README والـ&nbsp;Skill بتاع <a href="https://github.com/gosom/google-maps-scraper" target="_blank" rel="noopener">gosom/google-maps-scraper</a> (نسخة الـ&nbsp;Skill 1.12.1، رخصة MIT)، واتراجعت في 13 نوفمبر 2026. الأوامر ممكن تتغير مع التحديثات، فلو حاجة مختلفة ارجع للـ&nbsp;README. الأسماء والأرقام في الصفحة دي للتوضيح بس. إحنا مش تبع مطوّر الأداة، ولا Google، ولا Anthropic.</p>
+    </div>
+
+  </article>
+
+  <aside class="toc">
+    <h4>في الصفحة دي</h4>
+    <ol data-toc></ol>
+  </aside>
+</div>
+
+<section class="end">
+  <div class="in">
+    <div>
+      <h3>عندك الليستة، فاضل الإيميل</h3>
+      <p>إزاي تجهّز الدومين، وتكتب الإيميل، وتختار الزاوية، كل واحدة في دليل لوحدها.</p>
+    </div>
+    <div class="row">
+      <a class="btn btn-cyan" href="https://mohamedkhalafalla.github.io/gwk-cold-email-copy/">دليل كتابة الـ&nbsp;cold email</a>
+      <a class="btn btn-ghost" href="https://mohamedkhalafalla.github.io/gwk-cold-email-angles/">3 زوايا لأول إيميل</a>
+    </div>
+  </div>
+  <div class="foot">Guide © 2026 Grow With Khalaf · Google Maps Scraper by gosom (MIT) · Not affiliated with its author, Google or Anthropic</div>
+</section>
+
+<script>
+// Table of contents, built from the h2s so the two copies never drift.
+const heads = [...document.querySelectorAll('article h2[id]')];
+document.querySelectorAll('[data-toc]').forEach(list => {
+  heads.forEach(h => {
+    const li = document.createElement('li');
+    const a = document.createElement('a');
+    a.href = '#' + h.id;
+    a.textContent = h.textContent.trim().replace(/^\d+/, m => 'خطوة ' + m + ': ');
+    li.appendChild(a);
+    list.appendChild(li);
+  });
+});
+const tocLinks = [...document.querySelectorAll('aside.toc a')];
+const spy = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (!e.isIntersecting) return;
+    tocLinks.forEach(a => a.classList.toggle('on', a.getAttribute('href') === '#' + e.target.id));
+  });
+}, {rootMargin: '-90px 0px -70% 0px'});
+heads.forEach(h => spy.observe(h));
+
+// Label each cell with its column header, for the stacked phone layout.
+document.querySelectorAll('.tbl table').forEach(t => {
+  const labels = [...t.querySelectorAll('thead th')].map(th => th.textContent);
+  t.querySelectorAll('tbody tr').forEach(tr => [...tr.children].forEach((td, i) => td.dataset.l = labels[i]));
+});
+
+// Install tabs.
+const tabs = [...document.querySelectorAll('[role="tab"]')];
+tabs.forEach(t => t.addEventListener('click', () => {
+  tabs.forEach(x => {
+    const on = x === t;
+    x.setAttribute('aria-selected', on);
+    document.getElementById(x.getAttribute('aria-controls')).hidden = !on;
+  });
+}));
+
+// Copy buttons copy the plain text of the block below them (rule tags left out).
+document.querySelectorAll('.copy').forEach(b => b.addEventListener('click', async () => {
+  const box = b.closest('.prompt, .code, .email');
+  const src = box.querySelector('pre, .body').cloneNode(true);
+  src.querySelectorAll('.tag').forEach(t => t.remove());
+  const text = src.matches('pre') ? src.innerText : [...src.querySelectorAll('p')].map(p => p.textContent.trim()).join('\n\n');
+  try {
+    await navigator.clipboard.writeText(text);
+  } catch {
+    const ta = Object.assign(document.createElement('textarea'), {value: text});
+    document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove();
+  }
+  b.textContent = 'اتنسخ ✓'; b.classList.add('done');
+  setTimeout(() => { b.textContent = 'انسخ'; b.classList.remove('done'); }, 1600);
+}));
+</script>
+</body>
+</html>
